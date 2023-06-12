@@ -1,4 +1,7 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore, createSlice, createAction } from '@reduxjs/toolkit';
+// createAction import is used for the 'app/reset' action
+
+export const resetApp = createAction('app/reset');
 
 const songsSlice = createSlice({
   name: 'songs',
@@ -11,6 +14,11 @@ const songsSlice = createSlice({
       const index = state.indexOf(action.payload);
       state.splice(index, 1);
     },
+  },
+  extraReducers(builder) {
+    builder.addCase(resetApp.toString(), (/*state, action*/) => {
+      return [];
+    });
   },
 });
 
@@ -26,12 +34,17 @@ const moviesSlice = createSlice({
       state.splice(index, 1);
     },
   },
+  extraReducers(builder) {
+    builder.addCase(resetApp.toString(), (/* state, action */) => {
+      return [];
+    });
+  },
 });
 
 const store = configureStore({
   reducer: {
-    songs: songsSlice.reducer,
-    movies: moviesSlice.reducer,
+    songs: songsSlice.reducer, // big reducer inside redux store that forwards actions to mini-reducers.
+    movies: moviesSlice.reducer, // dispatched actions go into every reducer.
   },
 });
 
