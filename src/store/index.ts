@@ -1,50 +1,14 @@
-import { configureStore, createSlice, createAction } from '@reduxjs/toolkit';
+// export everything related to redux in this file to avoid circular imports.
+import { configureStore } from '@reduxjs/toolkit';
 // createAction import is used for the 'app/reset' action
-
-export const resetApp = createAction('app/reset');
-
-const songsSlice = createSlice({
-  name: 'songs',
-  initialState: [] as string[],
-  reducers: {
-    addSong(state, action) {
-      state.push(action.payload); // refers to song state only.
-    },
-    removeSong(state, action) {
-      const index = state.indexOf(action.payload);
-      state.splice(index, 1);
-    },
-  },
-  extraReducers(builder) {
-    builder.addCase(resetApp.toString(), (/*state, action*/) => {
-      return [];
-    });
-  },
-});
-
-const moviesSlice = createSlice({
-  name: 'movies',
-  initialState: [] as string[],
-  reducers: {
-    addMovie(state, action) {
-      state.push(action.payload);
-    },
-    removeMovie(state, action) {
-      const index = state.indexOf(action.payload);
-      state.splice(index, 1);
-    },
-  },
-  extraReducers(builder) {
-    builder.addCase(resetApp.toString(), (/* state, action */) => {
-      return [];
-    });
-  },
-});
+import { songsReducer, addSong, removeSong } from './slices/songsSlice';
+import { moviesReducer, addMovie, removeMovie } from './slices/moviesSlice';
+import { resetApp } from './actions';
 
 const store = configureStore({
   reducer: {
-    songs: songsSlice.reducer, // big reducer inside redux store that forwards actions to mini-reducers.
-    movies: moviesSlice.reducer, // dispatched actions go into every reducer.
+    songs: songsReducer, // big reducer inside redux store that forwards actions to mini-reducers.
+    movies: moviesReducer, // dispatched actions go into every reducer.
   },
 });
 
@@ -52,7 +16,8 @@ const store = configureStore({
 // store.dispatch(songsSlice.actions.addSong('my newest song'));
 // store.dispatch(songsSlice.actions.removeSong('my newest song'));
 
-export { store };
 export type RootState = ReturnType<typeof store.getState>;
-export const { addSong, removeSong } = songsSlice.actions;
-export const { addMovie, removeMovie } = moviesSlice.actions;
+export { store, resetApp, addSong, removeSong, addMovie, removeMovie };
+
+// export const { addSong, removeSong } = songsSlice.actions;
+// export const { addMovie, removeMovie } = moviesSlice.actions;
